@@ -1,1 +1,8 @@
-[{"nome": "PREPAGO", "fornecedor_valor": 3, "revenda_valor": 33}, {"nome": "PREPAGO+", "fornecedor_valor": 5, "revenda_valor": 35}, {"nome": "PLATINUM", "fornecedor_valor": 12, "revenda_valor": 42}]
+
+[
+    {
+        "nome": "Cartão Santander Infinite",
+        "valor_fornecedor": 25,
+        "revenda_valor": 55
+    }
+]

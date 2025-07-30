@@ -1,5 +1,5 @@
+
 async def comprar_no_fornecedor(produto_nome):
-    # Simulação de retorno com campos estruturados
     return {
         "cartao": "4258502278889163",
         "validade": "12/2028",

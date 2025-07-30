@@ -1,3 +1,4 @@
+
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
 import json
@@ -53,39 +54,36 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     elif query.data == "confirmar_pagamento":
         produto = context.user_data.get("produto")
-        await query.edit_message_text("⏳ Verificando pagamento...\n🔁 Realizando a compra no fornecedor...")
+        await query.edit_message_text(
+            "⏳ Verificando pagamento...\n🔁 Realizando a compra no fornecedor..."
+        )
 
         from telethon_bot import comprar_no_fornecedor
-        resposta = await comprar_no_fornecedor(produto["nome"])
+        dados = await comprar_no_fornecedor(produto["nome"])
+        valor_final = produto["valor_fornecedor"] + 30
 
-        mensagem_final = f"""
-✅ Compra concluída!
-🧾 Conteúdo:
+        mensagem = (
+            "✅ Compra concluída!\n"
+            "🧾 Conteúdo:\n\n"
+            "✨Detalhes do cartão\n\n"
+            f"💳 Cartão: {dados['cartao']}\n"
+            f"📆 Validade: {dados['validade']}\n"
+            f"🔐 Cvv: {dados['cvv']}\n\n"
+            f"🏳 Bandeira: {dados['bandeira']}\n"
+            f"💠 Nível: {dados['nivel']}\n"
+            f"⚜ Tipo: {dados['tipo']}\n"
+            f"🏛 Banco: {dados['banco']}\n"
+            f"🌍 País: {dados['pais']}\n\n"
+            f"👤 Dados Auxiliares:\n"
+            f"     - Nome: {dados['nome']}\n"
+            f"     - Cpf: {dados['cpf']}\n"
+            f"     - Data Nasc: {dados['nascimento']}\n\n"
+            f"💸 Valor: R$ {valor_final:.2f}\n"
+            f"💰 Boa aprovação, vai de Ip limpo e conta quente 🔥\n\n"
+            f"⏰ Tempo para o reembolso 29/07/2025 22:00"
+        )
 
-✨Detalhes do cartão
-
-💳 Cartão: {resposta.get("cartao")}
-📆 Validade: {resposta.get("validade")}
-🔐 Cvv: {resposta.get("cvv")}
-
-🏳 Bandeira: {resposta.get("bandeira")}
-💠 Nível: {resposta.get("nivel")}
-⚜ Tipo: {resposta.get("tipo")}
-🏛 Banco: {resposta.get("banco")}
-🌍 Pais: {resposta.get("pais")}
-
-👤 Dados Auxiliares:
-     - Nome: {resposta.get("nome")}
-     - Cpf: {resposta.get("cpf")}
-     - Data Nasc: {resposta.get("nascimento")}
-
-💸 Valor: R$ {int(produto["revenda_valor"]) + 30}
-💰 Boa aprovação, vai de Ip limpo e conta quente 🔥
-
-⏰ Tempo para o reembolso 29/07/2025 22:00
-        """
-
-        await query.message.reply_text(mensagem_final.strip())
+        await query.message.reply_text(mensagem)
 
 # Inicialização do bot
 app = ApplicationBuilder().token(TOKEN).build()
