@@ -4,7 +4,7 @@ from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandle
 import json
 
 # TOKEN fixo embutido diretamente
-TOKEN = "8493792708:AAGwFXi6QZPnvnZ_fhXI74h_uWZFxogBhew"
+TOKEN = "8493792708:AAEoH0--06iufGBDeWRrHSsU-fuLR-p_S3A"
 
 # Carregando os produtos com margem do JSON
 with open("produtos.json", "r") as f:
