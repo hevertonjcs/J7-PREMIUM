@@ -40,7 +40,7 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         nome = query.data.replace("produto_", "")
         produto = next((x for x in produtos if x["nome"] == nome), None)
         if produto:
-            context.user_data["produto"] = produto["nome"]
+            context.user_data["produto"] = produto
             await query.edit_message_text(
                 f"💳 Produto: {produto['nome']}\n"
                 f"💰 Valor: R$ {produto['revenda_valor']}\n\n"
@@ -53,16 +53,39 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     elif query.data == "confirmar_pagamento":
         produto = context.user_data.get("produto")
-        await query.edit_message_text(
-            "⏳ Verificando pagamento...\n🔁 Realizando a compra no fornecedor..."
-        )
+        await query.edit_message_text("⏳ Verificando pagamento...\n🔁 Realizando a compra no fornecedor...")
 
         from telethon_bot import comprar_no_fornecedor
-        resultado = await comprar_no_fornecedor(produto)
+        resposta = await comprar_no_fornecedor(produto["nome"])
 
-        await query.message.reply_text(
-            f"✅ Compra concluída!\n🧾 Conteúdo: \n\n{resultado}"
-        )
+        mensagem_final = f"""
+✅ Compra concluída!
+🧾 Conteúdo:
+
+✨Detalhes do cartão
+
+💳 Cartão: {resposta.get("cartao")}
+📆 Validade: {resposta.get("validade")}
+🔐 Cvv: {resposta.get("cvv")}
+
+🏳 Bandeira: {resposta.get("bandeira")}
+💠 Nível: {resposta.get("nivel")}
+⚜ Tipo: {resposta.get("tipo")}
+🏛 Banco: {resposta.get("banco")}
+🌍 Pais: {resposta.get("pais")}
+
+👤 Dados Auxiliares:
+     - Nome: {resposta.get("nome")}
+     - Cpf: {resposta.get("cpf")}
+     - Data Nasc: {resposta.get("nascimento")}
+
+💸 Valor: R$ {int(produto["revenda_valor"]) + 30}
+💰 Boa aprovação, vai de Ip limpo e conta quente 🔥
+
+⏰ Tempo para o reembolso 29/07/2025 22:00
+        """
+
+        await query.message.reply_text(mensagem_final.strip())
 
 # Inicialização do bot
 app = ApplicationBuilder().token(TOKEN).build()
