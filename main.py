@@ -61,7 +61,10 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f"✅ Compra concluída!\n🧾 Conteúdo: \n\n{resultado}"
         )
 
-app = ApplicationBuilder().token(TOKEN).build()
-app.add_handler(CommandHandler("start", start))
-app.add_handler(CallbackQueryHandler(handle_callback))
-app.run_polling()
+ app = ApplicationBuilder().token(TOKEN).build()
+ app.add_handler(CommandHandler("start", start))
+ app.add_handler(CallbackQueryHandler(handle_callback))
+-# rodar o bot
+-app.run_polling()
++# rodar o bot, descartando qualquer update pendente
++app.run_polling(drop_pending_updates=True)
