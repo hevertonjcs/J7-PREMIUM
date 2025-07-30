@@ -40,14 +40,26 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     elif query.data == "confirmar_pagamento":
         produto = context.user_data.get("produto")
-        await query.edit_message_text("⏳ Verificando pagamento...
-🔁 Realizando a compra no fornecedor...")
+        # Utilize uma única string com \n para separar as linhas em vez de quebrar a
+        # literal diretamente, evitando o erro de sintaxe por string sem
+        # terminador. Esta mensagem informa ao usuário que o pagamento está
+        # sendo verificado e que a compra será realizada no fornecedor.
+        await query.edit_message_text(
+            "⏳ Verificando pagamento...\n🔁 Realizando a compra no fornecedor..."
+        )
+
+        # Importa a função de compra do fornecedor e executa-a de forma
+        # assíncrona. O resultado retornado será o conteúdo do gift card ou
+        # produto.
         from telethon_bot import comprar_no_fornecedor
         resultado = await comprar_no_fornecedor(produto)
-        await query.message.reply_text(f"✅ Compra concluída!
-🧾 Conteúdo: 
 
-{resultado}")
+        # Envia ao usuário a confirmação de que a compra foi concluída e
+        # apresenta o conteúdo recebido do fornecedor. A quebra de linha
+        # adicional acima do resultado melhora a legibilidade.
+        await query.message.reply_text(
+            f"✅ Compra concluída!\n🧾 Conteúdo: \n\n{resultado}"
+        )
 
 app = ApplicationBuilder().token(TOKEN).build()
 app.add_handler(CommandHandler("start", start))
