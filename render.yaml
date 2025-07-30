@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: j7premium
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python main.py
